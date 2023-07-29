@@ -1,0 +1,7 @@
+.connect-page {
+    width: 100%;
+    height: 100%;
+    background: no-repeat url('https://penntoday.upenn.edu/sites/default/files/2019-07/Iron-man_2008.jpg');
+    background-size: cover;
+    @include flexCenter;
+}

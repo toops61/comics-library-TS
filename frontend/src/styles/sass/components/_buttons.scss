@@ -1,0 +1,61 @@
+.dark .switch-button {
+    border-color: white;
+    &::before {
+        transform: translateX(1.3em);
+        background-color: #fff;
+    }
+}
+
+.back {
+    z-index: 99;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: .5em;
+    left: .5em;
+    &::before {
+        @include icon('\f3e5',2em);
+        @include tablette-version {
+            font-size: 6vw;
+        }
+    }
+    &.hide {
+        display: none;
+    }
+}
+
+button {
+    cursor: pointer;
+    background-color: black;
+    color: #fff;
+    border: solid;
+    border-radius: 1em;
+    padding: .5em 1em;
+    font-size: 1.2em;
+}
+
+.color-button {
+    background-color: rgb(9, 9, 189);
+    border-color: rgb(224, 6, 6);
+    border-width: .3em;
+    font-size: 1.5em;
+}
+
+.arrow-up {
+    @include flexCenter;
+    position: fixed;
+    bottom: 1em;
+    right: 2vw;
+    @include mobile-version {
+        bottom: 1em;
+        right: 1em;
+    }
+    width: 2em;
+    height: 2em;
+    padding: .2em;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    &::before {
+        @include icon('\f077');
+    }
+}

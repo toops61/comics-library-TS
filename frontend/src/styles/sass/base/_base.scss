@@ -1,0 +1,109 @@
+*, ::before, ::after {
+  margin: 0;
+  padding: 0;
+  color: white;
+  box-sizing: border-box;
+}
+
+
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: black;
+	background-size: 100%;
+  height: 100vh;
+}
+
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.App {
+  margin: 0;
+  padding: 0;
+  transition: .8s;
+  height: 100%;
+  @include flexCenter;
+  font-size: 1.5vw;
+  @include tablette-version {
+    font-size: 3vw;
+  }
+  &.max {
+    height: auto;
+  }
+}
+
+ul, li {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+input,select {
+  color: black;
+}
+
+.previous-page {
+  cursor: pointer;
+  z-index: 50;
+  position: fixed;
+  bottom: 1em;
+  left: 1em;
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+  &::before {
+      @include icon('\f137',2em);
+  }
+}
+
+.alert-window {
+  position: fixed;
+  top: 0;
+  left: 0;
+  @include flexColumn;
+  justify-content: center;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+}
+
+.alert-message-container {
+  border: solid white;
+  border-radius: 2em;
+  width: 80%;
+  height: 60%;
+  @include flexColumn;
+  justify-content: center;
+  padding: 2em;
+  p {
+    font-size: 3em;
+  }
+  .valid {
+    &::before {
+      @include icon('\f00c',5em);
+      color: rgb(25, 173, 25);
+    }
+  }
+  .error {
+    &::before {
+      @include icon('\f00d',5em);
+      color: rgb(192, 14, 14);
+    }
+  }
+  .modify {
+    &::before {
+      @include icon('\f044',5em);
+      color: rgb(244, 135, 19);
+    }
+  }
+}

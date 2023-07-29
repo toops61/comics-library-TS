@@ -1,0 +1,40 @@
+.connect-container {
+    width: 50vw;
+    @include tablette-version {
+        width: 90%;
+    }
+    height: 20em;
+    border: solid .2em;
+    border-radius: 1em;
+    @include flexColumn;
+    justify-content: center;
+    background-color: rgb(92, 0, 0);
+    .user-inputs {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: .5em 0;
+        width: 90%;
+    }
+    label {
+        font-size: 1.4em;
+        margin-right: 1vw;
+    }
+    input {
+        width: 72%;
+        padding: .2em;
+    }
+}
+
+.create-container {
+    @extend .connect-container;
+    background-color: rgb(0, 0, 197);
+    .comics-inputs {
+        @extend .user-inputs;
+    }
+    input,select {
+        width: 80%;
+        padding: .2em;
+        font-size: 1.2em;
+    }
+}
