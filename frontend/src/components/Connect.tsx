@@ -38,10 +38,9 @@ export default function Connect(props:alertProps) {
                 throw new Error(`Erreur HTTP : ${response.status}`)
             }
             const json = await response.json();
-            const email = json.data.email;
             const userLogged:connectedFields = {
                 id: json.data._id,
-                email: email,
+                email: json.data.email,
                 token: json.token
             }
             dispatch(updateGeneralParams({connected:true}));

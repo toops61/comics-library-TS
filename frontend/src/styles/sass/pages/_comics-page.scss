@@ -3,7 +3,7 @@
     height: 100%;
     padding-bottom: 2em;
     @include flexColumn;
-    background: url(../img/wallpaper.webp) no-repeat;
+    background: url(../assets/wallpaper.webp) no-repeat;
     background-size: cover;
     .comic-fullscreen {
         position: fixed;

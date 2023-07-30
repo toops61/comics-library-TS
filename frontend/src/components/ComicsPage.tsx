@@ -32,7 +32,7 @@ export default function ComicsPage() {
     const getStoredComics = () => {
         const comicsStorage = sessionStorage.comicsStorage ? JSON.parse(sessionStorage.getItem('comicsStorage') || '') : '';
         const comicsCache = queryclient.getQueryData<queryResultFields>('comics');
-        setComicsStored(comicsCache?.data.length ? comicsCache : comicsStorage);
+        setComicsStored(comicsCache?.data.length ? comicsCache.data : comicsStorage);
         !comicsCache?.data && queryclient.fetchQuery(
             ['comics'],
             queryDynamic,{
@@ -58,7 +58,7 @@ export default function ComicsPage() {
 
     useEffect(() => {
         if (comicsStored?.length) {
-            const tempArray : displayedFields[] = [];
+            const tempArray : displayedFields[] = [];            
 
             const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","araignee","xmen","avengers"];
             
@@ -112,7 +112,7 @@ export default function ComicsPage() {
                     </div> : 
                     <div className="serie-container" key={uuidv4()} onClick={() => setSerie(serie.serie)} tabIndex={0}>
                         <div className="image-serie-container">
-                            <img src={`/comics_library/images/${serie.serie}.webp`} alt={serie.serie} />
+                            <img src={`./public/images/${serie.serie}.webp`} alt={serie.serie} />
                         </div>
                         <h3>{serie.serie}</h3>
                     </div>

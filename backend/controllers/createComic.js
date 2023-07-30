@@ -7,7 +7,7 @@ exports.createComic = (req, res) => {
     delete comic._id;
     Comic.create({...comic})
         .then(comic => {
-            const message = `Le comic est créé`
+            const message = `Le comic est créé`;
             res.json({
                 message,
                 data: comic
@@ -15,6 +15,6 @@ exports.createComic = (req, res) => {
         })
         .catch(error => {
             const message = 'Le comic n\'a pas pu être créé, réessayez dans un instant...'
-            res.status(500).json({ message, data: error })
+            res.status(500).json({ message })
         })
 }

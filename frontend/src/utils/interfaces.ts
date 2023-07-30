@@ -27,3 +27,7 @@ export interface queryResultFields {
     message:string,
     token?:string
 }
+export interface objectResultFields {
+    data:comicsFields,
+    message:string
+}

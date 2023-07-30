@@ -27,6 +27,7 @@ body {
   padding: 0;
   transition: .8s;
   height: 100%;
+  min-height: 100vh;
   @include flexCenter;
   font-size: 1.5vw;
   @include tablette-version {

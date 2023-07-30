@@ -20,7 +20,8 @@ export default function Home(props:alertProps) {
   }
 
   const handleData = (result:queryResultFields) => {
-    result.data.length ? sessionStorage.setItem('comicsStorage',JSON.stringify(result)) : 
+
+    result.data.length ? sessionStorage.setItem('comicsStorage',JSON.stringify(result.data)) : 
     (result.message && props.showAlert(result.message,'error'));
     return result;
   }

@@ -3,7 +3,7 @@ import { updateGeneralParams } from "./redux/generalParamsSlice";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { RootState } from "./redux/store";
 import { Route, Routes, useLocation } from "react-router-dom";
-import captainShield from './img/Captain_America_shield_mini.webp';
+import captainShield from './assets/Captain_America_shield_mini.webp';
 import Home from "./components/Home";
 import ComicsPage from "./components/ComicsPage";
 import Connect from "./components/Connect";

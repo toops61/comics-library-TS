@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { alertProps, comicsFields, connectedFields, queryResultFields } from "../utils/interfaces";
+import { alertProps, comicsFields, connectedFields, objectResultFields, queryResultFields } from "../utils/interfaces";
 import { NewComic } from "../utils/classes";
 
 export default function CreateModify(props:alertProps) {
@@ -30,9 +30,9 @@ export default function CreateModify(props:alertProps) {
 
     const comicFetch = async (fetchType:string) => {
         const token = user?.token;
-        const url = `http://localhost:8000/${newComic._id ? (fetchType === 'deleteFetch' ? 'deleteComic' : 'updatecomic') : 'newcomic'}`;
+        const url = `http://localhost:8000/${fetchType}`;
         const request = {
-            method: newComic._id ? (fetchType === 'deleteFetch' ? 'DELETE' : 'PUT') : 'POST',
+            method: newComic._id ? (fetchType === 'deleteComic' ? 'DELETE' : 'PUT') : 'POST',
             body: JSON.stringify(newComic),
             headers: {
             "Content-Type": "application/json",
@@ -44,12 +44,11 @@ export default function CreateModify(props:alertProps) {
             if (!response.ok) {
                 throw new Error(`Erreur HTTP : ${response.status}`)
             }
-            const json = await response.json();
+            const json : objectResultFields = await response.json();
             props.showAlert(json.message,'valid');
             setTimeout(() => {
                 navigate("/comics");
             }, 1900);
-            //console.log(json);
             return json;
         } catch (error) {
             console.log(error);
@@ -58,42 +57,57 @@ export default function CreateModify(props:alertProps) {
         }
     }
 
-    const updateArray = (newData:queryResultFields) => {
+    const updateArray = (newData:objectResultFields) => {
+        //get cache comics array
         const comicsCache = queryclient.getQueryData<queryResultFields>('comics');
+        
         const previousArray : comicsFields[] = comicsCache?.data ? comicsCache?.data : [];
+
+        //copy previous
         const previous = previousArray.map(comic => {return{...comic}});
         const oldComicIndex = previous.findIndex(comic => comic._id === newComic._id);
-        oldComicIndex === -1 ? previous.push(newData.data) : previousArray.splice(oldComicIndex,1,newComic);
+
+        //copy new one or update previous
+        oldComicIndex === -1 ? previous.push(newData.data) : previous.splice(oldComicIndex,1,newComic);
+
         sessionStorage.setItem('comicsStorage',JSON.stringify(previous));
-        return previous;
+        
+        const newObject = {message:'',data:previous};
+        return newObject;
     }
     
-    const { mutate:updateComic } = useMutation(() => comicFetch('updateFetch'), {
+    const { mutate:updateComic } = useMutation(() => comicFetch(newComic._id ? 'updatecomic' : 'newcomic'), {
         onSuccess: (data) => {
-            data.message && queryclient.setQueryData('comics',() => updateArray(data));
+            data?.data && queryclient.setQueryData('comics',() => updateArray(data));
         }
     });
-
-    const deleteOne = () => {
-        const comicsCache = queryclient.getQueryData<queryResultFields>('comics');
-        const previousArray : comicsFields[] = comicsCache?.data ? comicsCache?.data : [];
-        const previous = previousArray.map(comic => {return{...comic}});
-        const oldComicIndex = previous.findIndex(comic => comic._id === newComic._id);
-        oldComicIndex === -1 ? previous.push(newComic) : previous.splice(oldComicIndex,1);
-        sessionStorage.setItem('comicsStorage',JSON.stringify(previous));
-        return previous;
-    }
-
-    const { mutate:deleteComic } = useMutation(() => comicFetch('deleteFetch'), {
-        onSuccess: (data) => {
-            data.message && queryclient.setQueryData('comics',() => deleteOne());
-        }
-    });
-
+    
     const onSubmit : ((e:React.MouseEvent<HTMLButtonElement>) => void) = e => {
         e.preventDefault();
         updateComic();
     }
+
+    const deleteOne = () => {
+        const comicsCache = queryclient.getQueryData<queryResultFields>('comics');
+        const previousArray : comicsFields[] = comicsCache?.data ? comicsCache?.data : [];
+        //copy previous array
+        const previous = previousArray.map(comic => {return{...comic}});
+        //delete comic object from cache array
+        const oldComicIndex = previous.findIndex(comic => comic._id === newComic._id);
+        oldComicIndex !== -1 && previous.splice(oldComicIndex,1);
+
+        //update storage
+        sessionStorage.setItem('comicsStorage',JSON.stringify(previous));
+
+        const newObject = {message:'',data:previous};
+        return newObject;
+    }
+
+    const { mutate:deleteComic } = useMutation(() => comicFetch('deleteComic'), {
+        onSuccess: (data) => {
+            data?.message && queryclient.setQueryData('comics',() => deleteOne());
+        }
+    });
 
     const onDelete : ((e:React.MouseEvent<HTMLButtonElement>) => void) = e => {
         e.preventDefault();

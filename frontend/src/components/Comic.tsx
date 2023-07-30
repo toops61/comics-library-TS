@@ -1,4 +1,4 @@
-import logoBDtheque from "../img/bdgest_mini.webp";
+import logoBDtheque from "../assets/bdgest_mini.webp";
 import { Link } from "react-router-dom";
 import { comicsFields } from "../utils/interfaces";
 import { useAppSelector } from "../redux/hooks";
