@@ -2,6 +2,12 @@ import { useEffect } from "react";
 import { updateGeneralParams } from "./redux/generalParamsSlice";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { RootState } from "./redux/store";
+import { Route, Routes, useLocation } from "react-router-dom";
+import captainShield from './img/Captain_America_shield_mini.webp';
+import Home from "./components/Home";
+import ComicsPage from "./components/ComicsPage";
+import Connect from "./components/Connect";
+import CreateModify from "./components/CreateModify";
 
 export default function App() {
   const generalParams = useAppSelector((state : RootState) => state.generalParamsSlice);
@@ -27,6 +33,8 @@ export default function App() {
     changeBodySize();
   }, []);
 
+  const location = useLocation();
+
   return (
     <div className={"App" + (location.pathname === '/comics' ? ' max' : '')}>
       {generalParams.isLoading ? <div className="loader">
@@ -43,7 +51,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home showAlert={showAlert}/>} />
         <Route path="/connect" element={<Connect showAlert={showAlert}/>} />
-        <Route path="/comics" element={<ComicsPage showAlert={showAlert}/>} />
+        <Route path="/comics" element={<ComicsPage />} />
         <Route path="/createComic" element={<CreateModify showAlert={showAlert}/>} />
       </Routes>
     </div>

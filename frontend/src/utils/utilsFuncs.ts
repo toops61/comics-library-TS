@@ -1,4 +1,6 @@
-export const sortComicsFunction = (array:[]) => {
+import { comicsFields, queryResultFields } from "./interfaces";
+
+export const sortComicsFunction = (array:comicsFields[]) => {
     const newArray = [...array];
     newArray.sort((a,b) => {
         if (a.serie < b.serie) {
@@ -32,8 +34,17 @@ export const queryDynamic = async () => {
             throw new Error(`Erreur HTTP : ${response.status}`)
         }
         const json = await response.json();
-        return json;
+        const objectResult : queryResultFields = {
+            message:'',
+            data:json
+        }
+        return objectResult;
     } catch (error) {
-        return error;
+        const message = error instanceof Error ? error.message : '';
+        const objectResult : queryResultFields = {
+            message,
+            data:[]
+        }
+        return objectResult;
     }
 }
