@@ -112,7 +112,7 @@ export default function ComicsPage() {
                     </div> : 
                     <div className="serie-container" key={uuidv4()} onClick={() => setSerie(serie.serie)} tabIndex={0}>
                         <div className="image-serie-container">
-                            <img src={`./public/images/${serie.serie}.webp`} alt={serie.serie} />
+                            <img src={`./images/${serie.serie}.webp`} alt={serie.serie} />
                         </div>
                         <h3>{serie.serie}</h3>
                     </div>
