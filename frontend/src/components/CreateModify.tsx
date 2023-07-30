@@ -1,11 +1,13 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { alertProps, connectedFields } from "../utils/interfaces";
+import { alertProps, comicsFields, connectedFields, queryResultFields } from "../utils/interfaces";
 import { NewComic } from "../utils/classes";
 
 export default function CreateModify(props:alertProps) {
-    const [newComic, setNewComic] = useState(NewComic);
+    const initComic = new NewComic('','strange','01/01/1960','','');
+
+    const [newComic, setNewComic] = useState(initComic);
     
     const queryclient = useQueryClient();
     const user = queryclient.getQueryData<connectedFields>('user');
@@ -13,8 +15,10 @@ export default function CreateModify(props:alertProps) {
     const navigate = useNavigate();
 
     const handleChange : ((e:ChangeEvent) => void) = e => {
+        
         const tempObject = {...newComic};
-        tempObject[e.target.name] = e.target.value;
+        const target = e.target as HTMLInputElement;
+        tempObject[target.name] = target.value;
         setNewComic(tempObject);
     }
 
@@ -24,10 +28,10 @@ export default function CreateModify(props:alertProps) {
     }, [])
     
 
-    const comicFetch = async (fetchType) => {
+    const comicFetch = async (fetchType:string) => {
         const token = user?.token;
         const url = `http://localhost:8000/${newComic._id ? (fetchType === 'deleteFetch' ? 'deleteComic' : 'updatecomic') : 'newcomic'}`;
-        let request = {
+        const request = {
             method: newComic._id ? (fetchType === 'deleteFetch' ? 'DELETE' : 'PUT') : 'POST',
             body: JSON.stringify(newComic),
             headers: {
@@ -54,12 +58,14 @@ export default function CreateModify(props:alertProps) {
         }
     }
 
-    const updateArray = newData => {
-        const previousArray = [...queryclient.getQueryData('comics')];
-        const oldComicIndex = previousArray.findIndex(comic => comic._id === newComic._id);
-        oldComicIndex === -1 ? previousArray.push(newData.data) : previousArray.splice(oldComicIndex,1,newComic);
-        sessionStorage.setItem('comicsStorage',JSON.stringify(previousArray));
-        return previousArray;
+    const updateArray = (newData:queryResultFields) => {
+        const comicsCache = queryclient.getQueryData<queryResultFields>('comics');
+        const previousArray : comicsFields[] = comicsCache?.data ? comicsCache?.data : [];
+        const previous = previousArray.map(comic => {return{...comic}});
+        const oldComicIndex = previous.findIndex(comic => comic._id === newComic._id);
+        oldComicIndex === -1 ? previous.push(newData.data) : previousArray.splice(oldComicIndex,1,newComic);
+        sessionStorage.setItem('comicsStorage',JSON.stringify(previous));
+        return previous;
     }
     
     const { mutate:updateComic } = useMutation(() => comicFetch('updateFetch'), {
@@ -69,11 +75,13 @@ export default function CreateModify(props:alertProps) {
     });
 
     const deleteOne = () => {
-        const previousArray = [...queryclient.getQueryData('comics')];
-        const oldComicIndex = previousArray.findIndex(comic => comic._id === newComic._id);
-        oldComicIndex === -1 ? previousArray.push(newComic) : previousArray.splice(oldComicIndex,1);
-        sessionStorage.setItem('comicsStorage',JSON.stringify(previousArray));
-        return previousArray;
+        const comicsCache = queryclient.getQueryData<queryResultFields>('comics');
+        const previousArray : comicsFields[] = comicsCache?.data ? comicsCache?.data : [];
+        const previous = previousArray.map(comic => {return{...comic}});
+        const oldComicIndex = previous.findIndex(comic => comic._id === newComic._id);
+        oldComicIndex === -1 ? previous.push(newComic) : previous.splice(oldComicIndex,1);
+        sessionStorage.setItem('comicsStorage',JSON.stringify(previous));
+        return previous;
     }
 
     const { mutate:deleteComic } = useMutation(() => comicFetch('deleteFetch'), {
@@ -82,12 +90,12 @@ export default function CreateModify(props:alertProps) {
         }
     });
 
-    const onSubmit = e => {
+    const onSubmit : ((e:React.MouseEvent<HTMLButtonElement>) => void) = e => {
         e.preventDefault();
         updateComic();
     }
 
-    const onDelete = e => {
+    const onDelete : ((e:React.MouseEvent<HTMLButtonElement>) => void) = e => {
         e.preventDefault();
         window.confirm('Effacer le comic ?') && deleteComic();
     }

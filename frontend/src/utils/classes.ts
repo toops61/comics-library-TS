@@ -1,4 +1,6 @@
 export class NewComic {
+    [key:string]:string;
+
     constructor (
       public album:'',
       public serie:'strange',
