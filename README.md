@@ -6,10 +6,12 @@ Created using React with Vite bundle all in Typescript.
 
     Redux for the state management, 
     Usequery for API calls,
-    MongoDB for the database
+    MongoDB for the database,
     React router for the navigation.
 
-Read only version and writable version with node backend server on local mode only.
+Public read only version.
+
+Writable version with node backend server on local mode only.
 
 Final build version here :
 
