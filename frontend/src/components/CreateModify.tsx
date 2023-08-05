@@ -5,7 +5,7 @@ import { alertProps, comicsFields, connectedFields, objectResultFields, queryRes
 import { NewComic } from "../utils/classes";
 
 export default function CreateModify(props:alertProps) {
-    const initComic = new NewComic('','strange','01/01/1960','','');
+    const initComic = new NewComic('','strange','01/1960','','');
 
     const [newComic, setNewComic] = useState(initComic);
     

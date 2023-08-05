@@ -8,6 +8,7 @@ import Home from "./components/Home";
 import ComicsPage from "./components/ComicsPage";
 import Connect from "./components/Connect";
 import CreateModify from "./components/CreateModify";
+import { changeBodySize } from "./utils/utilsFuncs";
 
 export default function App() {
   const generalParams = useAppSelector((state : RootState) => state.generalParamsSlice);
@@ -22,15 +23,13 @@ export default function App() {
     }, 2000);
   };
 
-  const bodyDom = document.querySelector('body') as HTMLBodyElement;
-
-  const changeBodySize = () => {
-    window.innerWidth < 900 ? bodyDom.style.height = window.innerHeight + 'px' : bodyDom.style.height = '';
-  }
-
   useEffect(() => {
     window.addEventListener('resize', changeBodySize);
     changeBodySize();
+
+    return () => {
+      window.removeEventListener('resize', changeBodySize);
+    }
   }, []);
 
   const location = useLocation();

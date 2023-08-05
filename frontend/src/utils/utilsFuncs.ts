@@ -1,5 +1,11 @@
 import { comicsFields, queryResultFields } from "./interfaces";
 
+const bodyDom = document.querySelector('body') as HTMLBodyElement;
+
+export  const changeBodySize = () => {
+    window.innerWidth < 900 ? bodyDom.style.height = window.innerHeight + 'px' : bodyDom.style.height = '';
+}
+
 export const sortComicsFunction = (array:comicsFields[]) => {
     const newArray = [...array];
     newArray.sort((a,b) => {

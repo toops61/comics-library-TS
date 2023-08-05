@@ -5,19 +5,8 @@ import generalParamsSlice from "./generalParamsSlice";
 const store = configureStore({
     reducer: {
         generalParamsSlice
-    }/* ,
-    middleware: getDefaultMiddleware =>
-        getDefaultMiddleware()
-            .concat(logger) */
-});
-
-/* function customMiddleware(store) {
-    return function(next) {
-        return function(action){
-            console.log(store);
-        }
     }
-} */
+});
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
