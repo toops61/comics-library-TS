@@ -60,7 +60,7 @@ export default function ComicsPage() {
         if (comicsStored?.length) {
             const tempArray : displayedFields[] = [];            
 
-            const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","araignee","xmen","avengers"];
+            const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","araignee","xmen","avengers","DCcomics"];
             
             const handleObjects = (comic:comicsFields) => {
                 const serie = !arraySeries.includes(comic.serie) ? 'divers' : comic.serie;

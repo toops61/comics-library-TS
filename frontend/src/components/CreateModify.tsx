@@ -139,6 +139,7 @@ export default function CreateModify(props:alertProps) {
                     <option value="marvel classic">Marvel classic</option>
                     <option value="avengers">Les Vengeurs</option>
                     <option value="special">Spécial</option>
+                    <option value="DCcomics">DC Comics</option>
                     <option value="autre">Autre</option>
                 </select>
             </div>
