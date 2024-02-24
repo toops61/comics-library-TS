@@ -5,7 +5,7 @@ import { useQueryClient } from "react-query";
 import { useAppSelector } from "../redux/hooks";
 import { comicsFields, displayedFields, queryResultFields } from "../utils/interfaces";
 import { RootState } from "../redux/store";
-import { queryDynamic, sortComicsFunction } from "../utils/utilsFuncs";
+import { getComicName, queryDynamic, sortComicsFunction } from "../utils/utilsFuncs";
 import Arrow from "./Arrow";
 import Comic from "./Comic";
 
@@ -60,10 +60,10 @@ export default function ComicsPage() {
         if (comicsStored?.length) {
             const tempArray : displayedFields[] = [];            
 
-            const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","araignee","xmen","avengers","DCcomics"];
+            const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","spider-man","xmen","avengers","DCcomics","batman","justice league"];
             
             const handleObjects = (comic:comicsFields) => {
-                const serie = !arraySeries.includes(comic.serie) ? 'divers' : comic.serie;
+                const serie = !arraySeries.includes(comic.serie) ? 'divers' : (comic.serie === 'batman' || comic.serie === 'justice league' ? 'DCcomics' : comic.serie);
                 const objectIndex = tempArray.findIndex(object => object.serie === serie);
                 
                 objectIndex !== -1 ? tempArray[objectIndex].comics.push(comic) : 
@@ -114,7 +114,7 @@ export default function ComicsPage() {
                         <div className="image-serie-container">
                             <img src={`./images/${serie.serie}.webp`} alt={serie.serie} />
                         </div>
-                        <h3>{serie.serie}</h3>
+                        <h3>{getComicName(serie.serie)}</h3>
                     </div>
                 )
             })}

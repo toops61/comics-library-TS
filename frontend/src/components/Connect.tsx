@@ -6,7 +6,7 @@ import { alertProps, connectedFields, userFields } from "../utils/interfaces";
 import { updateGeneralParams } from "../redux/generalParamsSlice";
 import { useAppDispatch } from "../redux/hooks";
 
-export default function Connect(props:alertProps) {
+export default function Connect({showAlert}:alertProps) {
     const [userObject, setUserObject] = useState<userFields>({
         email:'',
         password:''
@@ -44,12 +44,12 @@ export default function Connect(props:alertProps) {
                 token: json.token
             }
             dispatch(updateGeneralParams({connected:true}));
-            props.showAlert(json.message,'valid');
+            showAlert(json.message,'valid');
             return userLogged;
         } catch (error) {
             console.log(error);
             const message = error instanceof Error ? error.message : '';
-            props.showAlert(message,'alert');
+            showAlert(message,'alert');
         }
     }
   

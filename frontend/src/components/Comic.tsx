@@ -2,6 +2,7 @@ import logoBDtheque from "../assets/bdgest_mini.webp";
 import { Link } from "react-router-dom";
 import { comicsFields } from "../utils/interfaces";
 import { useAppSelector } from "../redux/hooks";
+import { getComicName } from "../utils/utilsFuncs";
 
 interface comicProps {
     comic:comicsFields;
@@ -16,7 +17,7 @@ export default function Comic({comic,setFullscreen}:comicProps) {
             <div className="image-container" onClick={() => setFullscreen(comic)} tabIndex={0}>
                 <img src={comic.coverURL} alt="cover" />
             </div>
-            <p tabIndex={0}>{comic.serie !== 'autre' && comic.serie !== 'special' && comic.serie !== 'araignee' ? (comic.serie + ' ') : ''}{comic.album}</p>
+            <p tabIndex={0}>{(comic.serie !== 'autre' && comic.serie !== 'special' && comic.serie !== 'spider-man') || comic.sub_category ? (getComicName(comic.sub_category || comic.serie) + ' ') : ''}{comic.album}</p>
             <p>{comic.year}</p>
             {connected && <Link to="/createComic">
                 <div className="modify-comic" onClick={() => sessionStorage.setItem('modifiedComic',JSON.stringify(comic))}></div>

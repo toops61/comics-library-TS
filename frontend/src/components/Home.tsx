@@ -7,7 +7,7 @@ import { queryDynamic } from "../utils/utilsFuncs";
 import { alertProps, queryResultFields } from "../utils/interfaces";
 import { RootState } from "../redux/store";
 
-export default function Home(props:alertProps) {
+export default function Home({showAlert}:alertProps) {
   const generalParams = useAppSelector((state:RootState) => state.generalParamsSlice);
 
   const dispatch = useAppDispatch();
@@ -22,7 +22,7 @@ export default function Home(props:alertProps) {
   const handleData = (result:queryResultFields) => {
 
     result.data.length ? sessionStorage.setItem('comicsStorage',JSON.stringify(result.data)) : 
-    (result.message && props.showAlert(result.message,'error'));
+    (result.message && showAlert(result.message,'error'));
     return result;
   }
   

@@ -3,19 +3,23 @@ import { useMutation, useQueryClient } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { alertProps, comicsFields, connectedFields, objectResultFields, queryResultFields } from "../utils/interfaces";
 import { NewComic } from "../utils/classes";
+import { categoriesArray, firstLetterUpper, subCategoriesArray } from "../utils/utilsFuncs";
+import { useAppDispatch } from "../redux/hooks";
+import { updateGeneralParams } from "../redux/generalParamsSlice";
 
-export default function CreateModify(props:alertProps) {
-    const initComic = new NewComic('','strange','01/1960','','');
+export default function CreateModify({showAlert}:alertProps) {
+    const initComic = new NewComic('','strange','','01/1960','','');
 
     const [newComic, setNewComic] = useState(initComic);
     
     const queryclient = useQueryClient();
     const user = queryclient.getQueryData<connectedFields>('user');
 
+    const dispatch = useAppDispatch();
+
     const navigate = useNavigate();
 
     const handleChange : ((e:ChangeEvent) => void) = e => {
-        
         const tempObject = {...newComic};
         const target = e.target as HTMLInputElement;
         tempObject[target.name] = target.value;
@@ -41,11 +45,16 @@ export default function CreateModify(props:alertProps) {
         };
         try {
             const response = await fetch(url, request);
+            if (response.status === 401) {
+                dispatch(updateGeneralParams({connected:false}));
+                showAlert('Vous devez vous reconnecter','alert');
+                navigate("/connect");
+            } 
             if (!response.ok) {
                 throw new Error(`Erreur HTTP : ${response.status}`)
             }
             const json : objectResultFields = await response.json();
-            props.showAlert(json.message,'valid');
+            showAlert(json.message,'valid');
             setTimeout(() => {
                 navigate("/comics");
             }, 1900);
@@ -53,7 +62,7 @@ export default function CreateModify(props:alertProps) {
         } catch (error) {
             console.log(error);
             const message = error instanceof Error ? error.message : '';
-            props.showAlert(message,'alert');
+            showAlert(message,'alert');
         }
     }
 
@@ -125,22 +134,13 @@ export default function CreateModify(props:alertProps) {
             <div className='comics-inputs' tabIndex={0}>
                 <label htmlFor='serie'>Série</label>
                 <select name='serie' id='serie' onChange={handleChange} value={newComic.serie}>
-                    <option value="strange">Strange</option>
-                    <option value="spidey">Spidey</option>
-                    <option value="special strange">Special Strange</option>
-                    <option value="origines">Strange Special Origines</option>
-                    <option value="titans">Titans</option>
-                    <option value="nova">Nova</option>
-                    <option value="saga">Saga</option>
-                    <option value="hulk">Hulk</option>
-                    <option value="fantastiques">Les Quatre Fantastiques</option>
-                    <option value="araignee">L'Araignée</option>
-                    <option value="xmen">Les X-Men</option>
-                    <option value="marvel classic">Marvel classic</option>
-                    <option value="avengers">Les Vengeurs</option>
-                    <option value="special">Spécial</option>
-                    <option value="DCcomics">DC Comics</option>
-                    <option value="autre">Autre</option>
+                    {categoriesArray.map((field,index) => <option key={field.valueField+index} value={field.valueField}>{field.nameField || firstLetterUpper(field.valueField)}</option>)}
+                </select>
+            </div>
+            <div className='comics-inputs' tabIndex={0}>
+                <label htmlFor='sub_category'>Sous- catégorie</label>
+                <select name='sub_category' id='sub_category' onChange={handleChange} value={newComic.sub_category}>
+                    {subCategoriesArray.map((field,index) => <option key={field.valueField+index} value={field.valueField}>{field.nameField || firstLetterUpper(field.valueField)}</option>)}
                 </select>
             </div>
             <div className='comics-inputs' tabIndex={0}>
