@@ -1,10 +1,10 @@
 // Imports
-const express = require('express');
-const user = require('./controllers/user');
+import {Router} from 'express';
+import user from './controllers/user';
 
 // Router
-exports.router = (() => {
-    const apiRouter = express.Router();
+export const router = (() => {
+    const apiRouter = Router();
 
     // User routes
     apiRouter.route('/users/subscribe').post(user.subscribe);

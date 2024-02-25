@@ -71,8 +71,8 @@ export default function Connect({showAlert}:alertProps) {
     }
 
     useEffect(() => {
-    dispatch(updateGeneralParams({isLoading}));
-  }, [isLoading])
+        dispatch(updateGeneralParams({isLoading}));
+    }, [isLoading])
 
   return (
     <main className="connect-page">

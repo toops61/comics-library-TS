@@ -91,6 +91,8 @@ export const subCategoriesArray : categoriesArrayType[] = [
     }
 ]
 
+export const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","spider-man","xmen","avengers","DCcomics","batman","justice league"];
+
 export  const changeBodySize = () => {
     window.innerWidth < 900 ? bodyDom.style.height = window.innerHeight + 'px' : bodyDom.style.height = '';
 }
@@ -122,6 +124,12 @@ export const sortComicsFunction = (array:comicsFields[]) => {
             }
         }
     })
+    return newArray;
+}
+
+export const sortComicsAlbums = (array:comicsFields[]) => {
+    const newArray = [...array];
+    newArray.sort((a,b) => a.album < b.album ? -1 : 1);
     return newArray;
 }
 

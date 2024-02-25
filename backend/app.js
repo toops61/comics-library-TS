@@ -1,19 +1,16 @@
-const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const path = require('path');
+import express from 'express';
+import {connect} from 'mongoose';
+import {config} from 'dotenv';
+config();
+//const path = require('path');
 
-const comicsRoutes = require('./routes/comicsRoutes');
-const userRoutes = require('./routes/userRoutes');
+const app = express();
+import comicsRoutes from './routes/comicsRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 const uri = process.env.URI;
 
-dotenv.config();
-
-mongoose.connect(uri,
-    { useNewUrlParser: true,
-      useUnifiedTopology: true })
+connect(uri)
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(error => console.log('Connexion à MongoDB échouée !',error));
 
@@ -26,9 +23,9 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
+//app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/', comicsRoutes);
 app.use('/', userRoutes);
 
-module.exports = app;
+export default app;

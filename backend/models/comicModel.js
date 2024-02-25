@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import {Schema,model} from 'mongoose';
 
-const comicSchema = mongoose.Schema({
+const comicSchema = Schema({
   album: { type: String, required: true },
   serie: { type: String, required: true },
   sub_category: { type: String, required: false },
@@ -9,4 +9,6 @@ const comicSchema = mongoose.Schema({
   bedetheque: { type: String, required: false }
 });
 
-module.exports = mongoose.model('Comic', comicSchema);
+const ComicModel = model('Comic', comicSchema);
+
+export default ComicModel;

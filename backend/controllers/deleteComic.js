@@ -1,11 +1,11 @@
-const Comic = require('../models/comicModel');
+import ComicModel from '../models/comicModel.js';
 
-exports.deleteComic = (req, res) => {
+export default function deleteComic(req, res) {
     const comicObject = req.body;
     const id = comicObject._id;
-    Comic.findOne({ _id: id})
+    ComicModel.findOne({ _id: id})
         .then(comic => {
-            Comic.deleteOne({ _id: id })
+            ComicModel.deleteOne({ _id: id })
             .then(() => {
                 const message = `Le comic a bien été supprimé`;
                 res.status(200).json({ message });

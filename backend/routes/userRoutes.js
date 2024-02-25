@@ -1,14 +1,13 @@
-const express = require('express');
-const router = express.Router();
+import {Router} from 'express';
+const router = Router();
 
-const auth = require('../auth/auth');
 //const multer = require('../middleware/multer-config');
 
-const createUser = require('../controllers/subscribe');
-const connectUser = require('../controllers/login');
+import createUser from '../controllers/subscribe.js';
+import connectUser from '../controllers/login.js';
 //const getUser = require('../controllers/userProfil');
 
-router.post('/subscribe', createUser.createUser);
-router.post('/login', connectUser.connectUser);
+router.post('/subscribe', createUser);
+router.post('/login', connectUser);
 
-module.exports = router;
+export default router;

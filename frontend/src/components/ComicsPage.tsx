@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { v4 as uuidv4 } from 'uuid';
 import { useQueryClient } from "react-query";
 import { useAppSelector } from "../redux/hooks";
 import { comicsFields, displayedFields, queryResultFields } from "../utils/interfaces";
 import { RootState } from "../redux/store";
-import { getComicName, queryDynamic, sortComicsFunction } from "../utils/utilsFuncs";
+import { arraySeries, getComicName, queryDynamic, sortComicsAlbums, sortComicsFunction } from "../utils/utilsFuncs";
 import Arrow from "./Arrow";
 import Comic from "./Comic";
+import { nanoid } from "nanoid";
 
 export default function ComicsPage() {
     const connected = useAppSelector((state:RootState) => state.generalParamsSlice.connected);
@@ -20,12 +20,6 @@ export default function ComicsPage() {
 
     const [serieShown, setSerieShown] = useState<string>('');
     const [comicSelected, setComicSelected] = useState<comicsFields | null>(null);
-
-    const sortComicsAlbums = (array:comicsFields[]) => {
-        const newArray = [...array];
-        newArray.sort((a,b) => a.album < b.album ? -1 : 1);
-        return newArray;
-    }
 
     const queryclient = useQueryClient();
 
@@ -42,7 +36,6 @@ export default function ComicsPage() {
     }
     
     useEffect(() => {
-
         getStoredComics();
 
         sessionStorage.serieShown && setSerieShown(sessionStorage.getItem('serieShown') || '');
@@ -52,15 +45,13 @@ export default function ComicsPage() {
         window.addEventListener('scroll', windowScroll);
 
         return () => {
-        window.removeEventListener('scroll', windowScroll)
+            window.removeEventListener('scroll', windowScroll)
         }
     },[])
 
     useEffect(() => {
         if (comicsStored?.length) {
-            const tempArray : displayedFields[] = [];            
-
-            const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","spider-man","xmen","avengers","DCcomics","batman","justice league"];
+            const tempArray : displayedFields[] = [];                        
             
             const handleObjects = (comic:comicsFields) => {
                 const serie = !arraySeries.includes(comic.serie) ? 'divers' : (comic.serie === 'batman' || comic.serie === 'justice league' ? 'DCcomics' : comic.serie);
@@ -106,11 +97,11 @@ export default function ComicsPage() {
         <section className="comics-container">
             {displayedComics.map(serie => {
                 return (
-                    serieShown === serie.serie ? <div className="comics-selected" key={uuidv4()}>
-                        {serie.comics.map((comic:comicsFields) => <Comic key={uuidv4()} comic={comic} setFullscreen={setFullscreen} />)}
+                    serieShown === serie.serie ? <div className="comics-selected" key={nanoid()}>
+                        {serie.comics.map((comic:comicsFields) => <Comic key={nanoid()} comic={comic} setFullscreen={setFullscreen} />)}
                         <div className="close-window" onClick={() => setSerie('')}></div>
                     </div> : 
-                    <div className="serie-container" key={uuidv4()} onClick={() => setSerie(serie.serie)} tabIndex={0}>
+                    <div className="serie-container" key={nanoid()} onClick={() => setSerie(serie.serie)} tabIndex={0}>
                         <div className="image-serie-container">
                             <img src={`./images/${serie.serie}.webp`} alt={serie.serie} />
                         </div>

@@ -1,11 +1,9 @@
-const Comic = require('../models/comicModel');
+import ComicModel from '../models/comicModel.js';
 
-require('dotenv').config();
-
-exports.createComic = (req, res) => {
+export default function createComic(req, res) {
     const comic = req.body;
     delete comic._id;
-    Comic.create({...comic})
+    ComicModel.create({...comic})
         .then(comic => {
             const message = `Le comic est créé`;
             res.json({

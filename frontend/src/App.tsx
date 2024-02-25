@@ -1,6 +1,4 @@
-import { useEffect } from "react";
-import { updateGeneralParams } from "./redux/generalParamsSlice";
-import { useAppDispatch, useAppSelector } from "./redux/hooks";
+import { useAppSelector } from "./redux/hooks";
 import { RootState } from "./redux/store";
 import { Route, Routes, useLocation } from "react-router-dom";
 import captainShield from './assets/Captain_America_shield_mini.webp';
@@ -8,29 +6,12 @@ import Home from "./components/Home";
 import ComicsPage from "./components/ComicsPage";
 import Connect from "./components/Connect";
 import CreateModify from "./components/CreateModify";
-import { changeBodySize } from "./utils/utilsFuncs";
+import { useStartFuncs } from "./utils/hooksFunctions";
 
 export default function App() {
   const generalParams = useAppSelector((state : RootState) => state.generalParamsSlice);
 
-  const dispatch = useAppDispatch();
-
-  const showAlert = (message:string,type:string) => {
-    const alertType = type ? type : '';
-    dispatch(updateGeneralParams({alertMessage:message,alertVisible:true,alertType}));
-    setTimeout(() => {
-      dispatch(updateGeneralParams({alertVisible:false}));
-    }, 2000);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', changeBodySize);
-    changeBodySize();
-
-    return () => {
-      window.removeEventListener('resize', changeBodySize);
-    }
-  }, []);
+  const showAlert = useStartFuncs();
 
   const location = useLocation();
 

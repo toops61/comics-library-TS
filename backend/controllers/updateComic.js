@@ -1,9 +1,9 @@
-const Comic = require('../models/comicModel');
+import ComicModel from '../models/comicModel.js';
 
-exports.updateComic = (req, res) => {
+export default function updateComic(req, res) {
     const comicObject = req.body;
     const id = comicObject._id;
-    Comic.updateOne({ _id: id }, comicObject)
+    ComicModel.updateOne({ _id: id }, comicObject)
         .then(() => res.status(200).json({
             message: 'Comic modifié !',
             data: comicObject
