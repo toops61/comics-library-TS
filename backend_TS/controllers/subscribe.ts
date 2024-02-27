@@ -3,7 +3,44 @@ import UserModel from '../models/userModel';
 import {hash} from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-export default function createUser(req:Request,res:Response) {
+export default async function createUser(req:Request,res:Response) {
+
+    const importedToken = process.env.TOKEN_SECRET || '';
+
+    const utilisateur = req.body;
+
+    const createCallback = async (hash:string) => {
+        utilisateur.password = hash;
+        const profil = {...utilisateur};
+        try {
+            const userCreated = await UserModel.create(profil);
+            if (userCreated) {
+                const message = `Votre profil est créé, ${profil.email}. Bienvenue !`;
+                const token = jwt.sign(
+                    { userId: userCreated.id },
+                    importedToken,
+                    { expiresIn: '4h' }
+                )
+                return res.json({message, data: userCreated, token});
+            }
+        } catch (error) {
+            const message = 'L\'utilisateur n\'a pas pu être créé, réésayez dans un instant...';
+            return res.status(500).json({ message, data: error });
+        }
+    }
+
+    try {
+        const hashPassword = await hash(utilisateur.password, 10);
+        if (hashPassword) {
+            createCallback(hashPassword);
+        }
+    } catch (error) {
+        const message = 'L\'utilisateur n\'a pas pu être créé, réésayez dans un instant...';
+        return res.status(500).json({ message, data: error });
+    }
+}
+
+/* export default function createUser(req:Request,res:Response) {
 
     const importedToken = process.env.TOKEN_SECRET || '';
 
@@ -27,4 +64,4 @@ export default function createUser(req:Request,res:Response) {
                 res.status(500).json({ message, data: error })
             })
     })
-}
+} */

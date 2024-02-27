@@ -34,8 +34,11 @@ export default function Connect({showAlert}:alertProps) {
         };
         try {
             const response = await fetch(url, request);
+            
             if (!response.ok) {
-                throw new Error(`Erreur HTTP : ${response.status}`)
+                const json = await response.json();
+                const errorMessage = response.status === 401 ? json : `Erreur HTTP : ${response.status}`;
+                throw new Error(errorMessage);
             }
             const json = await response.json();
             const userLogged:connectedFields = {

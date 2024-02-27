@@ -1,4 +1,13 @@
-import {Schema,model} from 'mongoose';
+import {ObjectId, Schema,model} from 'mongoose';
+
+export interface comicSchemaType {
+  album: string;
+  serie: string;
+  sub_category?: string|null;
+  year?: string|null;
+  coverURL?: string|null;
+  bedetheque?: string|null;
+}
 
 const comicSchema = new Schema({
   album: { type: String, required: true },

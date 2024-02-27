@@ -48,7 +48,7 @@ export default function Home({showAlert}:alertProps) {
       {!generalParams.connected ? <Link to={'/connect'} className='connect-link'>
         <button className="connect-button">Connexion</button>
         </Link> : 
-        <button onClick={deconnectFunc} className="connect-button">Déconnexion</button>}
+        <button onClick={deconnectFunc} className="connect-button deconnect">Déconnexion</button>}
         <Link to={'/comics'}>
           <button className="color-button">Go to comics !</button>
         </Link>

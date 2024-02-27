@@ -1,13 +1,18 @@
 import { Request, Response } from 'express';
 import ComicModel from '../models/comicModel';
 
-export default function updateComic(req:Request,res:Response) {
+export default async function updateComic(req:Request,res:Response) {
     const comicObject = req.body;
     const id = comicObject._id;
-    ComicModel.updateOne({ _id: id }, comicObject)
-        .then(() => res.status(200).json({
+
+    try {
+        await ComicModel.updateOne({ _id: id }, comicObject);
+        return res.status(200).json({
             message: 'Comic modifié !',
             data: comicObject
-        }))
-        .catch(error => res.status(400).json({ error }));
+        })
+    } catch (error) {
+        const message = error instanceof Error ? error.message : '';
+        return res.status(500).json(message);
+    }
 }
