@@ -64,6 +64,10 @@ export const categoriesArray : categoriesArrayType[] = [
         nameField: 'DC Comics'
     },
     {
+        valueField: 'wolverine',
+        nameField: 'Wolverine'
+    },
+    {
         valueField: 'autre',
         nameField: ''
     }
@@ -86,12 +90,20 @@ export const subCategoriesArray : categoriesArrayType[] = [
         nameField: ''
     },
     {
+        valueField: 'daredevil',
+        nameField: ''
+    },
+    {
+        valueField: 'wolverine',
+        nameField: ''
+    },
+    {
         valueField: 'cote obscur',
         nameField: 'Le côté obscur'
     }
 ]
 
-export const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","spider-man","xmen","avengers","DCcomics","batman","justice league"];
+export const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","spider-man","xmen","avengers","DCcomics","batman","justice league","daredevil","wolverine"];
 
 export  const changeBodySize = () => {
     window.innerWidth < 900 ? bodyDom.style.height = window.innerHeight + 'px' : bodyDom.style.height = '';

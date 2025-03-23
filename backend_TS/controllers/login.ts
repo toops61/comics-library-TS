@@ -8,6 +8,7 @@ export default async function connectUser(req:Request,res:Response) {
 
     const responseFunc = async (user:userModelType) => {
         const match = await compare(req.body.password, user.password);
+        
         if (match) {
             const token = jwt.sign(
                 { userId: user.id },
