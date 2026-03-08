@@ -147,23 +147,20 @@ export const sortComicsAlbums = (array:comicsFields[]) => {
 
 //fetch function
 export const queryDynamic = async () => {
-    const url = `https://eu-west-2.aws.data.mongodb-api.com/app/data-vrwfj/endpoint/displayComics`;
+    //const url = `https://eu-west-2.aws.data.mongodb-api.com/app/data-vrwfj/endpoint/displayComics`;
+    const url = `https://comics-library-api.onrender.com/comics`;
     try {
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Erreur HTTP : ${response.status}`)
         }
-        const json = await response.json();
+        const json : queryResultFields = await response.json();
         //console.log(json);
         
-        const objectResult : queryResultFields = {
-            message:'',
-            data:json
+        if (json.data.length && "album" in json.data[0]) {
+            json.data = json.data.map(comic => ({...comic,sub_category:comic.sub_category ?? ''}));
         }
-        if (objectResult.data.length && "album" in objectResult.data[0]) {
-            objectResult.data = objectResult.data.map(comic => ({...comic,sub_category:comic.sub_category ?? ''}));
-        }
-        return objectResult;
+        return json;
     } catch (error) {
         const message = error instanceof Error ? error.message : '';
         const objectResult : queryResultFields = {

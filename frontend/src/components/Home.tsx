@@ -36,6 +36,7 @@ export default function Home({showAlert}:alertProps) {
 
   useEffect(() => {
     data && handleData(data);
+    data && console.log(data);
   }, [data])
   
 
