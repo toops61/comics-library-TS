@@ -8,7 +8,7 @@ import { useAppDispatch } from "../redux/hooks";
 
 export default function Connect({showAlert}:alertProps) {
     const [userObject, setUserObject] = useState<userFields>({
-        email:'',
+        login:'',
         password:''
     });
 
@@ -23,7 +23,8 @@ export default function Connect({showAlert}:alertProps) {
     }
 
     const fetchPost = async () => {
-        const url = 'http://localhost:8000/login';
+        //const url = 'http://localhost:8000/login';
+        const url = 'https://comics-library-api.onrender.com/login';
 
         const request = {
             method: 'POST',
@@ -43,7 +44,7 @@ export default function Connect({showAlert}:alertProps) {
             const json = await response.json();
             const userLogged:connectedFields = {
                 id: json.data._id,
-                email: json.data.email,
+                login: json.data.login,
                 token: json.token
             }
             dispatch(updateGeneralParams({connected:true}));
@@ -70,7 +71,7 @@ export default function Connect({showAlert}:alertProps) {
     //API fetch requete POST pour formulaire
     const connectSubmit : ((e:FormEvent) => void) = e => {
         e.preventDefault();
-        if (userObject.email && userObject.password) refetch();
+        if (userObject.login && userObject.password) refetch();
     }
 
     useEffect(() => {
@@ -81,10 +82,14 @@ export default function Connect({showAlert}:alertProps) {
     <main className="connect-page">
         <Link className="back" to="/"></Link>
         <form className='connect-container'>
-            <div className='user-inputs' tabIndex={0}>
+            {/* <div className='user-inputs' tabIndex={0}>
                 <label htmlFor='email'>Mail</label>
                 <input type='text' name='email' max='50' onChange={handleChange} value={userObject.email} required />
-            </div>
+            </div> */}
+            {<div className='user-inputs' tabIndex={0}>
+                <label htmlFor='login'>Login</label>
+                <input type='text' name='login' max='50' onChange={handleChange} value={userObject.login} required />
+            </div>}
             <div className='user-inputs' tabIndex={0}>
                 <label htmlFor='password'>Mot de passe</label>
                 <input type='password' name='password' max='50' onChange={handleChange} value={userObject.password} required />

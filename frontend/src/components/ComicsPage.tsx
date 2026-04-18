@@ -34,6 +34,42 @@ export default function ComicsPage() {
                 staleTime: 7200000
         });
     }
+
+    const getDisplayedComics = () => {
+        const tempArray : displayedFields[] = [];                        
+            
+        const handleObjects = (comic:comicsFields) => {
+            const serie = !arraySeries.includes(comic.serie) ? 'divers' : (comic.serie === 'batman' || comic.serie === 'justice league' ? 'DCcomics' : comic.serie);
+            const objectIndex = tempArray.findIndex(object => object.serie === serie);
+            
+            objectIndex !== -1 ? tempArray[objectIndex].comics.push(comic) : 
+                tempArray.push({
+                    serie,
+                    comics: [comic]
+                });
+        }
+        comicsStored.map(comic => handleObjects(comic));
+        
+        setDisplayedComics(tempArray.map(e => {
+            return {...e,comics:e.serie === 'hulk' ? sortComicsAlbums(e.comics) : sortComicsFunction(e.comics)}
+        }));
+    }
+
+    const getPreviousNext = (next:boolean) => {
+        const comicsSerie = displayedComics.find(e => e.serie === serieShown)?.comics || [];
+        if (comicsSerie.length > 1 && comicSelected) {
+            const selectedIndex = comicsSerie.findIndex(e => e._id === comicSelected._id);
+            let newIndex = 0;
+            if (selectedIndex >= 0) {
+                if (next) {
+                    newIndex = selectedIndex < (comicsSerie.length - 2) ? (selectedIndex+1) : 0;
+                } else {
+                    newIndex = selectedIndex > 0 ? (selectedIndex-1) : (comicsSerie.length - 1);
+                }
+            }
+            setComicSelected(comicsSerie[newIndex]);
+        }
+    }
     
     useEffect(() => {
         getStoredComics();
@@ -51,23 +87,7 @@ export default function ComicsPage() {
 
     useEffect(() => {
         if (comicsStored?.length) {
-            const tempArray : displayedFields[] = [];                        
-            
-            const handleObjects = (comic:comicsFields) => {
-                const serie = !arraySeries.includes(comic.serie) ? 'divers' : (comic.serie === 'batman' || comic.serie === 'justice league' ? 'DCcomics' : comic.serie);
-                const objectIndex = tempArray.findIndex(object => object.serie === serie);
-                
-                objectIndex !== -1 ? tempArray[objectIndex].comics.push(comic) : 
-                    tempArray.push({
-                        serie,
-                        comics: [comic]
-                    });
-            }
-            comicsStored.map(comic => handleObjects(comic));
-            
-            setDisplayedComics(tempArray.map(e => {
-                return {...e,comics:e.serie === 'hulk' ? sortComicsAlbums(e.comics) : sortComicsFunction(e.comics)}
-            }));
+            getDisplayedComics();
         }
     }, [comicsStored])
 
@@ -90,9 +110,11 @@ export default function ComicsPage() {
         }
         {comicSelected ? <div className="comic-fullscreen">
             <div className="close-window" onClick={() => setFullscreen(null)}></div>
+            <button className="change-page previous" onClick={() => getPreviousNext(false)}></button>            
             <div className="fullscreen-container">
                 <img src={comicSelected.coverURL} alt={comicSelected.serie+comicSelected.album} />
             </div>
+            <button className="change-page next" onClick={() => getPreviousNext(true)}></button>
         </div> : null}
         <section className="comics-container">
             {displayedComics.map(serie => {

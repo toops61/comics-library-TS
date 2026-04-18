@@ -34,7 +34,8 @@ export default function CreateModify({showAlert}:alertProps) {
 
     const comicFetch = async (fetchType:string) => {
         const token = user?.token;
-        const url = `http://localhost:8000/${fetchType}`;
+        //const url = `http://localhost:8000/${fetchType}`;
+        const url = `https://comics-library-api.onrender.com/${fetchType}`;
         const request = {
             method: newComic._id ? (fetchType === 'deleteComic' ? 'DELETE' : 'PUT') : 'POST',
             body: JSON.stringify(newComic),

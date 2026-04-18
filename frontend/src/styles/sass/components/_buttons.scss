@@ -60,3 +60,18 @@ button {
         @include icon('\f077');
     }
 }
+
+.change-page {
+    margin: 0 2vw;
+    border-radius: 50%;
+    border-width: .1em;
+    width: 1.5em;
+    height: 1.5em;
+    padding: .3em;
+    &::before {
+        @include icon('\f105')
+    }
+    &.previous {
+        transform: rotate(180deg);
+    }
+}

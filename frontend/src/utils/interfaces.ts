@@ -17,7 +17,7 @@ export interface userFields {
 }
 export interface connectedFields {
     id: string;
-    email: string;
+    login: string;
     token: string;
 }
 export interface alertProps {
