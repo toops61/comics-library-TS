@@ -102,6 +102,7 @@ export default function ComicsPage() {
 
     return (
     <main className="comics-main">
+        {serieShown && <div className="blur-page"></div>}
         <Link className="back" to="/"></Link>
         <h1 tabIndex={0}>Comics</h1>
         {connected ? <Link to="/createComic">

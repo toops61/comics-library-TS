@@ -23,7 +23,6 @@ export default function Connect({showAlert}:alertProps) {
     }
 
     const fetchPost = async () => {
-        //const url = 'http://localhost:8000/login';
         const url = 'https://comics-library-api.onrender.com/login';
 
         const request = {
