@@ -1,21 +1,17 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { alertProps, comicsFields, connectedFields, objectResultFields, queryResultFields } from "../utils/interfaces";
+import { alertProps, comicsFields, objectResultFields, queryResultFields } from "../utils/interfaces";
 import { NewComic } from "../utils/classes";
 import { categoriesArray, firstLetterUpper, subCategoriesArray } from "../utils/utilsFuncs";
-import { useAppDispatch } from "../redux/hooks";
-import { updateGeneralParams } from "../redux/generalParamsSlice";
+import { handleRefresh } from "../utils/fetchFuncs";
 
-export default function CreateModify({showAlert}:alertProps) {
+export default function CreateModify({showAlert}:{showAlert:alertProps}) {
     const initComic = new NewComic('','strange','','01/1960','','');
 
     const [newComic, setNewComic] = useState(initComic);
     
     const queryclient = useQueryClient();
-    const user = queryclient.getQueryData<connectedFields>('user');
-
-    const dispatch = useAppDispatch();
 
     const navigate = useNavigate();
 
@@ -33,27 +29,38 @@ export default function CreateModify({showAlert}:alertProps) {
     
 
     const comicFetch = async (fetchType:string) => {
-        const token = user?.token;
-        //const url = `http://localhost:8000/${fetchType}`;
         const url = `https://comics-library-api.onrender.com/${fetchType}`;
+        let method = 'POST';
+
+        if (newComic._id) {
+            method = fetchType === 'deleteComic' ? 'DELETE' : 'PUT';
+        }
+
         const request = {
-            method: newComic._id ? (fetchType === 'deleteComic' ? 'DELETE' : 'PUT') : 'POST',
+            method,
             body: JSON.stringify(newComic),
             headers: {
-            "Content-Type": "application/json",
-            'Authorization': 'Bearer ' + token
-            }
+                "Content-Type": "application/json"
+            },
+            credentials: "include" as RequestCredentials
         };
         try {
-            const response = await fetch(url, request);
+            let response = await fetch(url, request);
+            
+            // if access token checks failed
             if (response.status === 401) {
-                dispatch(updateGeneralParams({connected:false}));
-                showAlert('Vous devez vous reconnecter','alert');
-                navigate("/connect");
-            } 
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP : ${response.status}`)
+                const refreshResponse = await handleRefresh();
+
+                if (!refreshResponse) return {success:false,message:'Vous devez vous reconnecter ...'};
+
+                response = await fetch(url, request);
             }
+            
+            if (!response.ok) {
+                const json : objectResultFields = await response.json();
+                throw new Error(`Erreur HTTP : ${response.status}${json?.message ? (', ' + json.message) : ''}`)
+            }
+
             const json : objectResultFields = await response.json();
             showAlert(json.message,'valid');
             setTimeout(() => {
@@ -78,7 +85,7 @@ export default function CreateModify({showAlert}:alertProps) {
         const oldComicIndex = previous.findIndex(comic => comic._id === newComic._id);
 
         //copy new one or update previous
-        oldComicIndex === -1 ? previous.push(newData.data) : previous.splice(oldComicIndex,1,newComic);
+        oldComicIndex === -1 ? previous.push(newData.data!) : previous.splice(oldComicIndex,1,newComic);
 
         sessionStorage.setItem('comicsStorage',JSON.stringify(previous));
         
@@ -87,8 +94,8 @@ export default function CreateModify({showAlert}:alertProps) {
     }
     
     const { mutate:updateComic } = useMutation(() => comicFetch(newComic._id ? 'updatecomic' : 'newcomic'), {
-        onSuccess: (data) => {
-            data?.data && queryclient.setQueryData('comics',() => updateArray(data));
+        onSuccess: data => {
+            if (data?.success && data.data) queryclient.setQueryData('comics',() => updateArray(data));
         }
     });
     
@@ -99,9 +106,9 @@ export default function CreateModify({showAlert}:alertProps) {
 
     const deleteOne = () => {
         const comicsCache = queryclient.getQueryData<queryResultFields>('comics');
-        const previousArray : comicsFields[] = comicsCache?.data ? comicsCache?.data : [];
+        const previousArray : comicsFields[] = comicsCache?.data || [];
         //copy previous array
-        const previous = previousArray.map(comic => {return{...comic}});
+        const previous = previousArray.map(comic => ({...comic}));
         //delete comic object from cache array
         const oldComicIndex = previous.findIndex(comic => comic._id === newComic._id);
         oldComicIndex !== -1 && previous.splice(oldComicIndex,1);
@@ -115,7 +122,7 @@ export default function CreateModify({showAlert}:alertProps) {
 
     const { mutate:deleteComic } = useMutation(() => comicFetch('deleteComic'), {
         onSuccess: (data) => {
-            data?.message && queryclient.setQueryData('comics',() => deleteOne());
+            if (data?.success && data.data) queryclient.setQueryData('comics',() => deleteOne());
         }
     });
 

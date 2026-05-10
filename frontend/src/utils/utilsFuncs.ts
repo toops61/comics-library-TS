@@ -1,4 +1,4 @@
-import { categoriesArrayType, comicsFields, queryResultFields } from "./interfaces";
+import { categoriesArrayType, comicsFields } from "./interfaces";
 
 const bodyDom = document.querySelector('body') as HTMLBodyElement;
 
@@ -48,8 +48,8 @@ export const categoriesArray : categoriesArrayType[] = [
         nameField: 'Les X-Men'
     },
     {
-        valueField: 'marvel classic',
-        nameField: ''
+        valueField: 'marvelClassic',
+        nameField: 'Marvel Classic'
     },
     {
         valueField: 'avengers',
@@ -66,6 +66,18 @@ export const categoriesArray : categoriesArrayType[] = [
     {
         valueField: 'wolverine',
         nameField: 'Wolverine'
+    },
+    {
+        valueField: 'starWars',
+        nameField: 'Star Wars'
+    },
+    {
+        valueField: 'venom',
+        nameField: ''
+    },
+    {
+        valueField: 'fearItself',
+        nameField: 'Fear itself'
     },
     {
         valueField: 'autre',
@@ -100,10 +112,18 @@ export const subCategoriesArray : categoriesArrayType[] = [
     {
         valueField: 'cote obscur',
         nameField: 'Le côté obscur'
+    },
+    {
+        valueField: 'manoir des fantomes',
+        nameField: 'Le manoir des fantômes'
+    },
+    {
+        valueField: 'minuit',
+        nameField: 'Il est minuit, l\'heure des sorcières'
     }
 ]
 
-export const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","spider-man","xmen","avengers","DCcomics","batman","justice league","daredevil","wolverine"];
+export const arraySeries = ["strange","special strange","origines","spidey","saga","nova","titans","hulk","fantastiques","spider-man","xmen","avengers","DCcomics","batman","justice league","daredevil","wolverine","starWars","venom","fearItself","marvelClassic"];
 
 export  const changeBodySize = () => {
     window.innerWidth < 900 ? bodyDom.style.height = window.innerHeight + 'px' : bodyDom.style.height = '';
@@ -145,31 +165,7 @@ export const sortComicsAlbums = (array:comicsFields[]) => {
     return newArray;
 }
 
-//fetch function
-export const queryDynamic = async () => {
-    //const url = `https://eu-west-2.aws.data.mongodb-api.com/app/data-vrwfj/endpoint/displayComics`;
-    const url = `https://comics-library-api.onrender.com/comics`;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Erreur HTTP : ${response.status}`)
-        }
-        const json : queryResultFields = await response.json();
-        //console.log(json);
-        
-        if (json.data.length && "album" in json.data[0]) {
-            json.data = json.data.map(comic => ({...comic,sub_category:comic.sub_category ?? ''}));
-        }
-        return json;
-    } catch (error) {
-        const message = error instanceof Error ? error.message : '';
-        const objectResult : queryResultFields = {
-            message,
-            data:[]
-        }
-        return objectResult;
-    }
-}
+
 
 export const firstLetterUpper = (text:string) => {
     const arrayWords = text.split(' ');
@@ -187,3 +183,4 @@ export const getComicName = (valueField:string) => {
     const resultName = categoryFound ? (categoryFound.nameField || firstLetterUpper(categoryFound.valueField)) : valueField;
     return resultName;
 }
+

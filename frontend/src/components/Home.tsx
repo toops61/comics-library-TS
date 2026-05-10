@@ -3,20 +3,27 @@ import { Link } from "react-router-dom";
 import { useQuery, useQueryClient } from "react-query";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { updateGeneralParams } from "../redux/generalParamsSlice";
-import { queryDynamic } from "../utils/utilsFuncs";
 import { alertProps, queryResultFields } from "../utils/interfaces";
 import { RootState } from "../redux/store";
+import { disconnectUser, queryDynamic } from "../utils/fetchFuncs";
 
-export default function Home({showAlert}:alertProps) {
+export default function Home({showAlert}:{showAlert:alertProps}) {
   const generalParams = useAppSelector((state:RootState) => state.generalParamsSlice);
 
   const dispatch = useAppDispatch();
 
   const queryclient = useQueryClient();
 
-  const deconnectFunc = () => {
+  const deconnectFunc = async () => {
+    const response = await disconnectUser(showAlert);
+
+    if (!response.success) return showAlert('la déconnexion a échoué, réessayez. '+(response.message || ''),'alert');
+
+    showAlert(response.message,'valid');
+
+    delete sessionStorage.userStored;
     dispatch(updateGeneralParams({connected:false}));
-    queryclient.removeQueries({ queryKey:'user', exact: true });
+    queryclient.removeQueries('user');
   }
 
   const handleData = (result:queryResultFields) => {

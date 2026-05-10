@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import ComicModel, { comicSchemaType } from '../models/comicModel';
+import ComicModel, { comicSchemaType } from '../models/comicModel.js';
 
 export default async function createComic(req:Request,res:Response) {
     const comicReq = req.body;
@@ -8,6 +8,7 @@ export default async function createComic(req:Request,res:Response) {
     const createComicFunc = (comic:comicSchemaType) => {
         const message = `Le comic est créé`;
         return res.json({
+            success:true,
             message,
             data: comic
         })
@@ -18,29 +19,21 @@ export default async function createComic(req:Request,res:Response) {
     try {
         const newComic = await ComicModel.create({...comicReq});
 
+        if (!newComic) {
+            return res.status(400).json({
+                success: false,
+                message: "Erreur lors de la création en base"
+            });
+        }
+
         if (newComic) {
             createComicFunc(newComic);
-        } else {
-            return res.status(500).json({ errorMessage });
         }
+        
     } catch (error) {
-        return res.status(500).json({ errorMessage });
+        return res.status(400).json({
+        success: false,
+        message: errorMessage
+        });
     }
 }
-
-/* export default function createComic(req:Request,res:Response) {
-    const comic = req.body;
-    delete comic._id;
-    ComicModel.create({...comic})
-        .then(comic => {
-            const message = `Le comic est créé`;
-            res.json({
-                message,
-                data: comic
-            })
-        })
-        .catch(error => {
-            const message = 'Le comic n\'a pas pu être créé, réessayez dans un instant...'
-            res.status(500).json({ message })
-        })
-} */

@@ -1,4 +1,4 @@
-import { useAppSelector } from "./redux/hooks";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { RootState } from "./redux/store";
 import { Route, Routes, useLocation } from "react-router-dom";
 import captainShield from './assets/Captain_America_shield_mini.webp';
@@ -7,6 +7,9 @@ import ComicsPage from "./components/ComicsPage";
 import Connect from "./components/Connect";
 import CreateModify from "./components/CreateModify";
 import { useStartFuncs } from "./utils/hooksFunctions";
+import { useEffect } from "react";
+import { checkConnection } from "./utils/fetchFuncs";
+import { updateGeneralParams } from "./redux/generalParamsSlice";
 
 export default function App() {
   const generalParams = useAppSelector((state : RootState) => state.generalParamsSlice);
@@ -14,6 +17,22 @@ export default function App() {
   const showAlert = useStartFuncs();
 
   const location = useLocation();
+
+  const dispatch = useAppDispatch();
+
+  const isConnectedFunc = async () => {
+    
+    const result = await checkConnection();
+    
+    if (result.success) {
+      dispatch(updateGeneralParams({connected:true}));
+    }
+  }
+
+  useEffect(() => {
+    isConnectedFunc();
+  }, [])
+  
 
   return (
     <div className={"App" + (location.pathname === '/comics' ? ' max' : '')}>

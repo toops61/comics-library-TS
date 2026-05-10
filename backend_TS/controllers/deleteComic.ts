@@ -1,50 +1,31 @@
 import { Request, Response } from 'express';
-import ComicModel from '../models/comicModel';
+import ComicModel from '../models/comicModel.js';
 
 export default async function deleteComic(req:Request,res:Response) {
-    const comicObject = req.body;
-    const id = comicObject._id;
-
-    const deleteFunc = async () => {
-        try {
-            await ComicModel.deleteOne({ _id: id });
-            const message = `Le comic a bien été supprimé`;
-            return res.status(200).json({ message });
-        } catch (error) {
-            return res.status(400).json('Erreur dans la suppression, réessayez');
-        }
-    }
-
+    
     try {
-        const comicFound = await ComicModel.findOne({ _id: id});
-        if (comicFound) {
-            deleteFunc();
-        } else {
-            return res.status(500).json('Le comic n\'a pas été retrouvé');
-        }
+        const comicObject = req.body;
+        const id = comicObject._id;
+
+        const comicDeleted = await ComicModel.findByIdAndDelete(id);
         
+        if (!comicDeleted) {
+        return res.status(404).json({
+            success: false,
+            message: "Comic introuvable"
+        });
+        }
+
+        return res.status(200).json({
+        success: true,
+        message: `${comicDeleted.serie} "${comicDeleted.album}" effacé ...`,
+        data: id
+        });
+
     } catch (error) {
-        const message = error instanceof Error ? error.message : '';
-        return res.status(500).json(message);
-    }
-
-          
+        return res.status(500).json({
+        success: false,
+        message: "Erreur, le comic n'a pas pu être effacé"
+        });
+    }  
 }
-
-/* export default function deleteComic(req:Request,res:Response) {
-    const comicObject = req.body;
-    const id = comicObject._id;
-    ComicModel.findOne({ _id: id})
-        .then(comic => {
-            ComicModel.deleteOne({ _id: id })
-            .then(() => {
-                const message = `Le comic a bien été supprimé`;
-                res.status(200).json({ message });
-            })
-            .catch(error => res.status(400).json({ error }));
-        })
-        .catch(error => {
-            //const message = 'Le comic n\'a pas pu être récupéré :-( Réessayez dans quelques instants.'
-            res.status(500).json(error.message);
-        });        
-} */

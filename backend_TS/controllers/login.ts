@@ -1,67 +1,68 @@
 import { Request, Response } from 'express';
-import UserModel, { userModelType } from '../models/userModel';
+import UserModel from '../models/userModel.js';
 import {compare} from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import { connectToDB } from '../auth/connectToDB.js';
+import { addSession, checksSessionToken } from './sessionServerActions.js';
+import { SessionModel } from '../models/sessionModel.js';
 
 export default async function connectUser(req:Request,res:Response) {
-    const importedToken = process.env.TOKEN_SECRET || '';
+    try {    
+    const { login, password } = req.body;
 
-    const responseFunc = async (user:userModelType) => {
-        const match = await compare(req.body.password, user.password);
-        
-        if (match) {
-            const token = jwt.sign(
-                { userId: user.id },
-                importedToken,
-                { expiresIn: '4h' }
-            )
-            const message = `L'utilisateur a été connecté avec succès`;
-            return res.json({ message, data: user, token })
-        } else {
-            return res.status(401).json('Erreur de mot de passe');
-        }
+    if (!login || !password) {
+      return res.status(400).json({ success: false });
     }
 
-    try {
-        const queryUser = await UserModel.findOne({ email: req.body.email });
-        if (queryUser) {
-            responseFunc(queryUser);
-        } else {
-            return res.status(401).json('L\'utilisateur n\'existe pas, inscrivez-vous svp');
-        }
-    } catch (error) {
-        const message = `L'utilisateur n'a pas pu être connecté.`;
-        return res.status(500).json({ message, data: error })
+    await connectToDB();
+
+    const userFound = await UserModel.findOne({ login });
+
+    if (!userFound) {
+      return res.json({ success: false, message: "Utilisateur inexistant, créez un compte" });
     }
+
+    const isLogged = await compare(password, userFound.password);
+
+    if (!isLogged) {
+      return res.json({ success: false, message: "Erreur de mot de passe" });
+    }
+
+    await addSession(String(userFound._id), req, res);
+
+    return res.json({
+      success: true,
+      message: `Vous êtes connecté, ${login}`,
+      data: {login,userId:userFound._id}
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false });
+  }
 }
 
-/* export default function connectUser(req:Request,res:Response) {
-    const importedToken = process.env.TOKEN_SECRET || '';
+export const disconnectUser = async (req:Request,res:Response) => {
+    await connectToDB();
 
-    UserModel.findOne({ email: req.body.email })
-        .then(user => {
-            if (!user) {
-                return res.status(401).json('l\'utilisateur n\'existe pas, inscrivez-vous svp');
-            }
+    const { sessionId } = await checksSessionToken(req);
 
-            compare(req.body.password, user.password).then(isPasswordValid => {
-                if (!isPasswordValid) {
-                    return res.status(401).json('erreur de mot de passe')
-                }
+    await SessionModel.findByIdAndDelete(sessionId);
 
-                const token = jwt.sign(
-                    { userId: user.id },
-                    importedToken,
-                    { expiresIn: '4h' }
-                )
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        path: "/"
+    });
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        path: "/"
+    });
 
-                const message = `L'utilisateur a été connecté avec succès`;
-                return res.json({ message, data: user, token })
-
-            })
-        })
-        .catch(error => {
-            const message = `L'utilisateur n'a pas pu être connecté.`;
-            return res.status(500).json({ message, data: error })
-        })
-} */
+    return res.json({
+        success: true,
+        message: `Vous êtes déconnecté`
+    });
+}

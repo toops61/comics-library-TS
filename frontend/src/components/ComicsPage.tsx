@@ -4,10 +4,11 @@ import { useQueryClient } from "react-query";
 import { useAppSelector } from "../redux/hooks";
 import { comicsFields, displayedFields, queryResultFields } from "../utils/interfaces";
 import { RootState } from "../redux/store";
-import { arraySeries, getComicName, queryDynamic, sortComicsAlbums, sortComicsFunction } from "../utils/utilsFuncs";
+import { arraySeries, getComicName, sortComicsAlbums, sortComicsFunction } from "../utils/utilsFuncs";
 import Arrow from "./Arrow";
 import Comic from "./Comic";
 import { nanoid } from "nanoid";
+import { queryDynamic } from "../utils/fetchFuncs";
 
 export default function ComicsPage() {
     const connected = useAppSelector((state:RootState) => state.generalParamsSlice.connected);

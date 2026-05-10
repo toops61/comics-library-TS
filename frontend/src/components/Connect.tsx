@@ -2,11 +2,11 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
-import { alertProps, connectedFields, userFields } from "../utils/interfaces";
+import { alertProps, backendResultUser, connectedFields, userFields } from "../utils/interfaces";
 import { updateGeneralParams } from "../redux/generalParamsSlice";
 import { useAppDispatch } from "../redux/hooks";
 
-export default function Connect({showAlert}:alertProps) {
+export default function Connect({showAlert}:{showAlert:alertProps}) {
     const [userObject, setUserObject] = useState<userFields>({
         login:'',
         password:''
@@ -29,26 +29,31 @@ export default function Connect({showAlert}:alertProps) {
             method: 'POST',
             body: JSON.stringify(userObject),
             headers: {
-            "Content-Type": "application/json"
-            }
+                "Content-Type": "application/json"
+            },
+            credentials: "include" as RequestCredentials
         };
         try {
             const response = await fetch(url, request);
+            console.log('response :',response);
             
             if (!response.ok) {
                 const json = await response.json();
                 const errorMessage = response.status === 401 ? json : `Erreur HTTP : ${response.status}`;
                 throw new Error(errorMessage);
             }
-            const json = await response.json();
-            const userLogged:connectedFields = {
-                id: json.data._id,
-                login: json.data.login,
-                token: json.token
+            const json : backendResultUser = await response.json();
+            if (json.success && json.data) {
+                const userLogged:connectedFields = {
+                    userId: json.data.userId,
+                    login: json.data.login
+                }
+                dispatch(updateGeneralParams({connected:true}));
+                showAlert(json.message,'valid');
+                return userLogged;
+            } else {
+                showAlert('la connexion a échoué, réessayez','alert');
             }
-            dispatch(updateGeneralParams({connected:true}));
-            showAlert(json.message,'valid');
-            return userLogged;
         } catch (error) {
             console.log(error);
             const message = error instanceof Error ? error.message : '';
@@ -63,7 +68,7 @@ export default function Connect({showAlert}:alertProps) {
         staleTime: 1800000
     })
 
-    data?.token && setTimeout(() => {
+    data?.userId && setTimeout(() => {
         navigate("/comics");
     }, 1000);
 

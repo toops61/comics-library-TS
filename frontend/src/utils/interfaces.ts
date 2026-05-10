@@ -16,13 +16,10 @@ export interface userFields {
     [key:string]:string;
 }
 export interface connectedFields {
-    id: string;
+    userId: string;
     login: string;
-    token: string;
 }
-export interface alertProps {
-    showAlert:(message:string,type:string) => void;
-}
+export type alertProps = (message:string,type:string) => void;
 
 export interface queryResultFields {
     data:comicsFields[];
@@ -30,11 +27,17 @@ export interface queryResultFields {
     token?:string;
 }
 export interface objectResultFields {
-    data:comicsFields;
+    success:boolean;
+    data?:comicsFields;
     message:string;
 }
 
 export interface categoriesArrayType {
     valueField: string;
     nameField: string;
+}
+export interface backendResultUser {
+    success:boolean;
+    message:string;
+    data?:userFields;
 }

@@ -1,11 +1,11 @@
 import {Router} from 'express';
 const router = Router();
 
-import auth from '../auth/auth';
+import auth from '../auth/auth.js';
 
-import createComic from '../controllers/createComic';
-import updateComic from '../controllers/updateComic';
-import deleteComic from '../controllers/deleteComic';
+import createComic from '../controllers/createComic.js';
+import updateComic from '../controllers/updateComic.js';
+import deleteComic from '../controllers/deleteComic.js';
 
 router.post('/newcomic', auth, createComic);
 router.put('/updatecomic', auth, updateComic);
