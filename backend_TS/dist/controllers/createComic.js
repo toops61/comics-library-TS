@@ -26,7 +26,7 @@ export default async function createComic(req, res) {
     catch (error) {
         return res.status(400).json({
             success: false,
-            message: "Erreur, le comic n'a pas pu être créé"
+            message: errorMessage
         });
     }
 }

@@ -28,10 +28,11 @@
 }
 
 .create-container {
+    position: relative;
     @extend .connect-container;
     height: auto;
     padding: 1em 0 2em;
-    background-color: rgb(0, 0, 197);
+    background-color: #010171;
     .comics-inputs {
         @extend .user-inputs;
     }
@@ -39,5 +40,13 @@
         width: 80%;
         padding: .2em;
         font-size: 1.2em;
+    }
+    .close-window {
+        background-color: white;
+        filter: drop-shadow(.1em .1em .2em black);
+        border: solid .1em white;
+        &::before {
+            color: black;
+        }
     }
 }

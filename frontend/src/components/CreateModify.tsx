@@ -7,7 +7,7 @@ import { categoriesArray, firstLetterUpper, subCategoriesArray } from "../utils/
 import { handleRefresh } from "../utils/fetchFuncs";
 
 export default function CreateModify({showAlert}:{showAlert:alertProps}) {
-    const initComic = new NewComic('','strange','','01/1960','','');
+    const initComic = new NewComic('','','strange','','','01/1960','','');
 
     const [newComic, setNewComic] = useState(initComic);
     
@@ -135,6 +135,7 @@ export default function CreateModify({showAlert}:{showAlert:alertProps}) {
     <main className="create-page">
         <Link className="back" to="/"></Link>
         <form className='create-container'>
+            <div className="close-window" onClick={() => navigate("/comics")}></div>
             <div className='comics-inputs' tabIndex={0}>
                 <label htmlFor='album'>Album</label>
                 <input type='text' name='album' max='50' onChange={handleChange} value={newComic.album} required />
@@ -150,6 +151,14 @@ export default function CreateModify({showAlert}:{showAlert:alertProps}) {
                 <select name='sub_category' id='sub_category' onChange={handleChange} value={newComic.sub_category}>
                     {subCategoriesArray.map((field,index) => <option key={field.valueField+index} value={field.valueField}>{field.nameField || firstLetterUpper(field.valueField)}</option>)}
                 </select>
+            </div>
+            <div className='comics-inputs' tabIndex={0}>
+                <label htmlFor='number'>Numéro</label>
+                <input type='text' name='number' onChange={handleChange} value={newComic.number} />
+            </div>
+            <div className='comics-inputs' tabIndex={0}>
+                <label htmlFor='linked_album'>Album relié</label>
+                <input type='text' name='linked_album' onChange={handleChange} value={newComic.linked_album} />
             </div>
             <div className='comics-inputs' tabIndex={0}>
                 <label htmlFor='year'>Parution</label>

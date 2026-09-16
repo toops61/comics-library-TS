@@ -81,7 +81,7 @@ export const categoriesArray : categoriesArrayType[] = [
     },
     {
         valueField: 'coteObscur',
-        nameField: 'Le côté Obscur'
+        nameField: 'Le Côté Obscur'
     },
     {
         valueField: 'autre',

@@ -4,7 +4,6 @@ export default async function deleteComic(req, res) {
         const comicObject = req.body;
         const id = comicObject._id;
         const comicDeleted = await ComicModel.findByIdAndDelete(id);
-        console.log('disc wanted Deleted :', comicDeleted);
         if (!comicDeleted) {
             return res.status(404).json({
                 success: false,
@@ -20,7 +19,7 @@ export default async function deleteComic(req, res) {
     catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Erreur, le disque n'a pas pu être effacé"
+            message: "Erreur, le comic n'a pas pu être effacé"
         });
     }
 }

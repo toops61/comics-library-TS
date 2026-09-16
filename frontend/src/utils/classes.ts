@@ -3,8 +3,10 @@ export class NewComic {
 
     constructor (
       public album:string,
+      public linked_album:string,
       public serie:string,
       public sub_category:string,
+      public number:string,
       public year:string,
       public coverURL:string,
       public bedetheque:string

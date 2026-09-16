@@ -36,9 +36,9 @@ button {
 }
 
 .color-button {
-    background-color: rgb(9, 9, 189);
-    border-color: rgb(224, 6, 6);
-    //border-width: .3em;
+    background-color: #010171;
+    border-color: white;
+    border-width: .1em;
     font-size: 1.5em;
 }
 
@@ -73,5 +73,18 @@ button {
     }
     &.previous {
         transform: rotate(180deg);
+    }
+}
+
+.close-window {
+    position: absolute;
+    top: -.5em;
+    right: -2vw;
+    border-radius: 50%;
+    background-color: black;
+    filter: drop-shadow(.1em .1em .2em black);
+    @include flexCenter;
+    &::before {
+        @include icon('\f057',2em);
     }
 }

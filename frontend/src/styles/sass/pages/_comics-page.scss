@@ -72,18 +72,6 @@
             font-size: 1em;
         }
     }
-    .close-window {
-        position: absolute;
-        top: -.5em;
-        right: -2vw;
-        border-radius: 50%;
-        background-color: black;
-        filter: drop-shadow(.1em .1em .2em black);
-        @include flexCenter;
-        &::before {
-            @include icon('\f057',2em);
-        }
-    }
     .image-serie-container {
         width: 10em;
         height: 14em;
@@ -104,6 +92,19 @@
             text-align: center;
         }
         box-shadow: 9px 7px 5px black;
+    }
+    .comic-number {
+        position: absolute;
+        bottom: .5vh;
+        right: .3vw;
+        background-color: #fff;
+        border: .1em solid black;
+        padding: 0 .4vw;
+        min-width: 2vw;
+        p {
+            color: black;
+            font-weight: bold;
+        }
     }
     .image-container {
         width: 10em;

@@ -37,7 +37,7 @@ export default function ComicsPage() {
     }
 
     const getDisplayedComics = () => {
-        const tempArray : displayedFields[] = [];                        
+        const tempArray : displayedFields[] = [];
             
         const handleObjects = (comic:comicsFields) => {
             const serie = !arraySeries.includes(comic.serie) ? 'divers' : (comic.serie === 'batman' || comic.serie === 'justice league' ? 'DCcomics' : comic.serie);
@@ -119,10 +119,10 @@ export default function ComicsPage() {
             <button className="change-page next" onClick={() => getPreviousNext(true)}></button>
         </div> : null}
         <section className="comics-container">
-            {displayedComics.map(serie => {
+            {displayedComics.map((serie,ind) => {
                 return (
-                    serieShown === serie.serie ? <div className="comics-selected" key={nanoid()}>
-                        {serie.comics.map((comic:comicsFields) => <Comic key={nanoid()} comic={comic} setFullscreen={setFullscreen} />)}
+                    serieShown === serie.serie ? <div className="comics-selected" key={serie.serie+ind}>
+                        {serie.comics.map((comic:comicsFields) => <Comic key={comic._id} comic={comic} setFullscreen={setFullscreen} />)}
                         <div className="close-window" onClick={() => setSerie('')}></div>
                     </div> : 
                     <div className="serie-container" key={nanoid()} onClick={() => setSerie(serie.serie)} tabIndex={0}>

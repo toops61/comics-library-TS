@@ -1,5 +1,7 @@
 export interface comicsFields {
     album:string;
+    linked_album?:string;
+    number?:string;
     serie:string;
     sub_category?:string;
     year:string;
