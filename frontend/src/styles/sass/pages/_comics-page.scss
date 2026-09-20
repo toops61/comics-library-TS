@@ -106,6 +106,16 @@
             font-weight: bold;
         }
     }
+    .album-number {
+        position: absolute;
+        border: solid .05em black;
+        border-radius: .2em;
+        background-color: #cf0000;
+        color: white;
+        top: -.3em;
+        padding: .1em .4em;
+        filter: drop-shadow(.2em .1em .05em black);
+    }
     .image-container {
         width: 10em;
         height: 14em;

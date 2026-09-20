@@ -12,10 +12,11 @@ interface comicProps {
 export default function Comic({comic,setFullscreen}:comicProps) {
     const connected = useAppSelector(state => state.generalParamsSlice.connected);
 
-    const { serie,bedetheque,coverURL,sub_category,album,year,number } = comic;
+    const { serie,bedetheque,coverURL,sub_category,album,year,number,linked_album } = comic;
 
     return (
         <div className="comic">
+            {linked_album ? <p className="album-number">Album n°{linked_album}</p> : <></>}
             <div className="image-container" onClick={() => setFullscreen(comic)} tabIndex={0}>
                 <img src={coverURL} alt="cover" />
             </div>
